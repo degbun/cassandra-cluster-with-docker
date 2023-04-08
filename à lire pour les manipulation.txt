@@ -1,0 +1,68 @@
+1
+#voir status de noeud1 
+docker exec -it cass-cassandra-1 nodetool status
+
+ouvent quand on fait cette commande on a des erreurs il faut la retester plusieurs en souvent utilisan le id du noeud au quel on eut se connecter
+
+
+2
+# entrer dans le noeud 1
+
+
+docker exec -it cass-cassandra-1 bash -c 'cqlsh -u cassandra -p cassandra'
+
+3
+CREATE KEYSPACE test_cassandra WITH replication = {'class':'SimpleStrategy' , 'replication_factor' : 1};
+
+4
+#voir la clé
+DESCRIBE KEYSPACES;
+
+5
+#inserer des valeurs
+
+use test_cassandra;  
+pour commencer à manipuler quand tu rentre dans le cqlsh faire use test_cassandra,
+
+CREATE TABLE test_cassandra.employee ( emp_id int PRIMARY KEY , name text , city text ) ;
+
+
+
+INSERT INTO test_cassandra.employee (emp_id , name , city ) VALUES
+(1, 'lepain' , 'IDSI' ) ;
+
+6
+#voir les valeurs
+
+SELECT * FROM  test_cassandra.employee;
+
+7
+#sortir de cqlsh
+exit
+
+8
+# entrez dans un autre noeud et voir si il ya la réplicattion
+
+9
+#voir les tokens generer pour chaque lignes
+SELECT token(emp_id), emp_id, city FROM test_cassandra.employee;
+
+10
+
+#update une valeur
+ update test_cassandra.employee set city = 'Paris' where emp_id =1;
+SELECT * FROM  test_cassandra.employee;
+
+
+
+11
+# sortir
+exit
+
+
+12
+#voir quel noeud point sur telle lignes
+docker exec -it cass-cassandra-1 nodetool getendpoints test_cassandra employee '6';
+
+
+

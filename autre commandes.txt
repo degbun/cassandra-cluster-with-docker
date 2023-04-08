@@ -1,0 +1,61 @@
+update nom_table set attribut = 'valeur' where num_f ='f44';
+
+#voir sur quel noeuds est repartie telle ou telle lignes de la table employé avec le emp_id=6
+docker exec -it cass-cassandra-1 nodetool getendpoints test_cassandra employee '6';
+
+La commande docker exec -it cass-cassandra-1 nodetool getendpoints test_cassandra employee '6'; permet de voir les nœuds qui contiennent des copies des colonnes pour la ligne ayant une clé primaire de valeur "6" dans la table "employee" de l'espace de clés "test_cassandra".
+
+Assurez-vous que le nom de l'espace de clés, le nom de la table, la clé primaire et le nom de l'hôte du nœud Cassandra sont corrects avant d'exécuter cette commande.
+
+
+
+
+#voir tt les valeurs dans une colone
+SELECT * FROM  test_cassandra.employee;
+
+CREATE KEYSPACE test_cassandra WITH replication = {'class':'SimpleStrategy' , 'replication_factor' : 1};
+
+
+INSERT INTO test_cassandra.employee (emp_id , name , city ) VALUES
+(2, 'Mary' , 'Seattle' ) ;
+
+
+
+
+
+
+#voir les tokens de chaque lignes de notre colone
+
+cassandra@cqlsh> SELECT token(emp_id), emp_id, city FROM test_cassandra.employee;
+
+La commande SELECT token(emp_id), emp_id, city FROM test_cassandra.employee; permet de récupérer les informations sur la clé de hachage (token) de la colonne emp_id, la valeur de la colonne emp_id et la valeur de la colonne city pour chaque ligne de la table employee de l'espace de clés test_cassandra.
+
+La fonction token(emp_id) retourne la valeur du jeton (token) associée à la valeur de la colonne emp_id. Cette valeur de jeton représente la position de la ligne dans la plage de jetons qui est attribuée à un ou plusieurs nœuds Cassandra dans le cluster.
+
+En exécutant cette commande, vous pouvez obtenir des informations sur la façon dont les données sont distribuées dans le cluster et comment les jetons sont attribués aux nœuds. Cela peut être utile pour comprendre comment les requêtes sont réparties dans le cluster et comment les données sont stockées et répliquées.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+La commande DESCRIBE CLUSTER; affiche des informations sur le cluster Cassandra, notamment le nom du cluster, le partitionneur (Partitioner) utilisé pour répartir les données sur les nœuds et le snitch utilisé pour identifier l'emplacement des nœuds dans le cluster.
+
+Dans cet exemple, le nom du cluster est cassandra-cluster, le partitionneur est Murmur3Partitioner, qui est un partitionneur aléatoire basé sur le hachage de Murmur3 et le snitch est DynamicEndpointSnitch, qui est un snitch qui tente de sélectionner les nœuds les plus proches pour répondre aux requêtes.
+
+
+cassandra@cqlsh> DESCRIBE CLUSTER;

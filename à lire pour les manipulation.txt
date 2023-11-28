@@ -42,7 +42,7 @@ exit
 
 8
 # entrez dans un autre noeud et voir si il ya la réplicattion
-
+docker exec -it cassandra-2 bash -c 'cqlsh'
 9
 #voir les tokens generer pour chaque lignes
 SELECT token(emp_id), emp_id, city FROM test_cassandra.employee;
